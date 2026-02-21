@@ -1,0 +1,28 @@
+{
+  "name": "doc-converter",
+  "version": "0.1.0",
+  "description": "A powerful document format converter for DevOps workflows",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "doc-convert": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src test",
+    "format": "prettier --write .",
+    "start": "node src/index.js"
+  },
+  "keywords": [
+    "converter",
+    "document",
+    "markdown",
+    "html",
+    "pdf",
+    "docx",
+    "devops"
+  ],
+  "author": "Sagar Jadhav",
+  "license": "MIT"
+}
