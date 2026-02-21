@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  converter:
+    build: .
+    image: doc-converter:latest
+    volumes:
+      - ./documents:/app/documents
+    environment:
+      - NODE_ENV=production
+    profiles:
+      - converter
+
+  pdf-service:
+    build: .
+    image: doc-converter:latest
+    command: ["--format", "pdf"]
+    volumes:
+      - ./documents:/app/documents
+    profiles:
+      - pdf
