@@ -1,43 +1,78 @@
-# Architecture Document: DocConverter
+# Architecture Document
 
-## 1. System Overview
-
-DocConverter is a Node.js CLI tool that handles document format conversion. It uses a modular architecture with converters for different format pairs.
-
-## 2. Architecture Diagram
+## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      CLI Interface                          │
-│                  (Commander.js)                            │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Conversion Manager                         │
-│              - Format detection                             │
-│              - Converter selection                          │
-└─────────────────────────┬───────────────────────────────────┘
-                          │
-          ┌───────────────┼───────────────┐
-          ▼               ▼               ▼
-    ┌──────────┐    ┌──────────┐    ┌──────────┐
-    │ Markdown │    │   HTML   │    │   PDF    │
-    │Converter│    │Converter │    │Converter │
-    └──────────┘    └──────────┘    └──────────┘
+┌─────────────────────────────────────────────────┐
+│              DocConverter System                 │
+├─────────────────────────────────────────────────┤
+│  ┌─────────────┐     ┌────────────────────────┐ │
+│  │ CLI Input   │     │   Converter Pipeline   │ │
+│  │ - File     │────►│   MD → HTML → PDF/DOCX │ │
+│  │ - Batch    │     │                        │ │
+│  └─────────────┘     └────────────────────────┘ │
+│         │                        │               │
+│         │              ┌────────▼────────┐      │
+│         │              │  Format Engine  │      │
+│         │              │  - markdown-it  │      │
+│         │              │  - pdfkit       │      │
+│         │              │  - docx         │      │
+│         │              │  - puppeteer    │      │
+│         │              └─────────────────┘      │
+│         │                        │               │
+│  ┌──────▼──────┐              ┌─┴─────────────┐ │
+│  │ Output File │◄─────────────│  Formatter    │ │
+│  └─────────────┘              │  Preserver    │ │
+│                               └───────────────┘ │
+└─────────────────────────────────────────────────┘
 ```
 
-## 3. File Structure
+## Components
+
+### 1. CLI Interface
+- Command-line argument parsing
+- File path handling
+- Batch processing queue
+
+### 2. Converter Pipeline
+- Input format detection
+- Conversion chain execution
+- Output format routing
+
+### 3. Format Engines
+- **markdown-it**: Markdown → HTML
+- **pdfkit**: HTML → PDF
+- **docx**: HTML → DOCX
+- **puppeteer**: HTML → PDF (alternative)
+
+### 4. Format Preserver
+- Style extraction and apply
+- Image handling
+- Table conversion
+
+## Conversion Paths
+
+```
+Markdown ──► HTML ──► PDF
+    │           │
+    └───────────┼──► DOCX
+                │
+                └──► HTML (direct)
+```
+
+## File Structure
 
 ```
 doc-converter/
-├── src/               # Source code
-├── specs/             # Documentation
+├── src/
+│   ├── converters/
+│   ├── formatters/
+│   └── cli/
+├── tests/
+├── docker/
+├── .github/workflows/
 ├── package.json
-└── README.md
+└── specs/
+    ├── BRD.md
+    └── ARCHITECTURE.md
 ```
-
----
-
-*Document Version: 1.0*  
-*Created: 2026-03-17*
