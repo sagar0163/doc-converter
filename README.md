@@ -39,3 +39,4 @@ MIT
 ## Credits
 - POST /convert
 - supports md, html, pdf
+- input: file
