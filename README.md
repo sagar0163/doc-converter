@@ -32,3 +32,4 @@ MIT
 - Test update
 ## Features
 ## Installation
+- npm install
