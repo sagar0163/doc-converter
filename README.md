@@ -38,3 +38,4 @@ MIT
 - Bug fix
 ## Credits
 - POST /convert
+- supports md, html, pdf
