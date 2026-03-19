@@ -41,3 +41,4 @@ MIT
 - supports md, html, pdf
 - input: file
 - output: converted file
+- supports batch conversion
