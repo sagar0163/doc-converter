@@ -33,3 +33,4 @@ MIT
 ## Features
 ## Installation
 - npm install
+- npm run convert
