@@ -37,3 +37,4 @@ MIT
 - Test feature
 - Bug fix
 ## Credits
+- POST /convert
