@@ -36,3 +36,4 @@ MIT
 - npm run convert
 - Test feature
 - Bug fix
+## Credits
