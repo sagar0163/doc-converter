@@ -34,3 +34,4 @@ MIT
 ## Installation
 - npm install
 - npm run convert
+- Test feature
