@@ -42,3 +42,4 @@ MIT
 - input: file
 - output: converted file
 - supports batch conversion
+- fast conversion
