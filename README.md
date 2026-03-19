@@ -40,3 +40,4 @@ MIT
 - POST /convert
 - supports md, html, pdf
 - input: file
+- output: converted file
