@@ -35,3 +35,4 @@ MIT
 - npm install
 - npm run convert
 - Test feature
+- Bug fix
