@@ -2,7 +2,7 @@
  * Markdown to HTML converter
  */
 
-export function convertMarkdownToHtml(markdown) {
+export function convertMarkdownToHtml(markdown, _options = {}) {
   let html = markdown;
   
   // Convert headers

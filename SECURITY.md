@@ -4,8 +4,9 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.x     | :white_check_mark: |
-| < 1.0   | :x:                |
+| 0.1.x   | :white_check_mark: |
+| < 0.1   | :x:                |
+| 1.x     | :x: (not yet released) |
 
 ## Reporting a Vulnerability
 
@@ -14,14 +15,11 @@ We will respond within 24 hours.
 
 ## Security Checks
 
-This project includes security scanning in CI:
+This project runs supply-chain security scans on every build — both in CI (see `.github/workflows/ci.yml`) and as a dedicated audit stage in the Dockerfile. Both run `npm audit` against the full dependency tree and fail the build if any high-severity vulnerability is found:
 
 ```bash
-# Run security audit
-npm audit
-
-# Run dependency check
-npm audit fix
+# Run security audit (full dependency tree, fails on high-severity findings)
+npm audit --audit-level=high
 ```
 
 ## Best Practices
@@ -29,5 +27,5 @@ npm audit fix
 1. Keep dependencies updated
 2. Validate all user input
 3. Sanitize file uploads
-4. Use secure headers
-5. Implement rate limiting
+4. Use secure headers (when an HTTP service is ever added)
+5. Implement rate limiting (when an HTTP service is ever added)
