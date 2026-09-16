@@ -51,10 +51,14 @@ export async function convertHtmlToPdf(html, options = {}) {
     );
   }
 
+  const needsNoSandbox = typeof process.getuid === 'function' && process.getuid() === 0;
   const launchOptions = {
     executablePath,
     headless: true,
-    args: ['--disable-dev-shm-usage'],
+    args: [
+      '--disable-dev-shm-usage',
+      ...(needsNoSandbox ? ['--no-sandbox', '--disable-setuid-sandbox'] : []),
+    ],
   };
 
   let browser;

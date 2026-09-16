@@ -19,10 +19,10 @@ instance and passed through to converter functions.
 
 ### `convert(input, outputFormat, options?)`
 
-Converts `input` to the requested output format. Returns a string for HTML output
-and an object for the (placeholder) PDF/DOCX paths.
+Converts `input` to the requested output format. Returns a string for HTML and
+Markdown output and a `Buffer` for PDF output.
 
-- `input` - string content or buffer
+- `input` - string content or Buffer (pass a `Buffer` for DOCX input)
 - `outputFormat` - `'html'`, `'pdf'`, `'markdown'`/`'md'`
 - `options` - optional per-call options
 
@@ -30,37 +30,52 @@ and an object for the (placeholder) PDF/DOCX paths.
 const result = await converter.convert('# Hello', 'html');
 // result: '<h1>Hello</h1>'
 
-throw new Error(`Unsupported output format: ${outputFormat}`); // for others
+const pdf = await converter.convert('# Hello', 'pdf');
+// pdf: Buffer starting with '%PDF-'
+
+const md = await converter.convert(docxBuffer, 'markdown');
+// md: markdown text extracted from the .docx
+```
+
+Unsupported format pairs throw an explicit error. For example:
+
+```js
+throw new Error(`Unsupported conversion: docx -> html`);
+throw new Error(`Unsupported output format: docx`);
 ```
 
 ### `detectFormat(input)`
 
-Detects a format from content: `'markdown'`, `'html'`, `'text'`, or `'binary'`.
+Detects a format from content: `'markdown'`, `'html'`, `'text'`, `'docx'`
+(a Buffer with a ZIP/`PK` magic header), or `'binary'`.
 
 ### `toHtml(input, format, options?)`
 
-Converts Markdown input to HTML (delegates to `convertMarkdownToHtml`). Other
-input formats are passed through unchanged.
+Converts Markdown input to HTML (delegates to `convertMarkdownToHtml`). HTML and
+text input are passed through unchanged. Anything else throws.
 
 ### `toPdf(input, format, options?)`
 
-Converts to HTML first, then delegates to `convertHtmlToPdf`. Currently a
-placeholder — PDF generation is planned, not implemented.
+Converts to HTML first, then delegates to `convertHtmlToPdf` (Puppeteer).
+Returns a `Buffer` containing a real PDF. Options: `format` (default `'A4'`),
+`margin` (string or `{top,right,bottom,left}` object), `landscape` (boolean).
+Requires a Chrome/Chromium binary (auto-detected or set via `CHROME_PATH`).
 
 ### `toMarkdown(input, format, options?)`
 
-Converts DOCX input to Markdown via `convertDocxToMarkdown`. Currently a
-placeholder — DOCX conversion is planned, not implemented.
+Converts DOCX input (a `Buffer`) to Markdown via `convertDocxToMarkdown`
+(mammoth). Markdown input is passed through unchanged. Anything else throws.
 
 ## Supported Formats
 
-| Input              | Output        | Status                       |
-| ------------------ | ------------- | ---------------------------- |
-| Markdown           | HTML          | Implemented                  |
-| Markdown           | PDF           | Planned (placeholder result) |
-| DOCX               | Markdown      | Planned (placeholder result) |
-| HTML               | Markdown      | Not supported                |
-| PDF                | Markdown, HTML| Not supported                |
+| Input              | Output        | Status                  |
+| ------------------ | ------------- | ----------------------- |
+| Markdown           | HTML          | Implemented             |
+| Markdown           | PDF           | Implemented (puppeteer) |
+| HTML               | PDF           | Implemented (puppeteer) |
+| DOCX               | Markdown      | Implemented (mammoth)   |
+| PDF                | anything      | Not supported           |
+| DOCX               | HTML/PDF      | Not supported           |
 
 ## CLI Usage
 
@@ -68,7 +83,13 @@ placeholder — DOCX conversion is planned, not implemented.
 # Convert Markdown to HTML
 doc-convert input.md output.html
 
-# Convert to a format via --format
+# Convert Markdown or HTML to PDF
+doc-convert input.md output.pdf
+
+# Convert DOCX to Markdown
+doc-convert document.docx output.md
+
+# Choose the output format explicitly
 doc-convert input.md --format pdf
 
 # Show help / version
@@ -76,13 +97,15 @@ doc-convert --help
 doc-convert --version
 ```
 
-The CLI reads the input file as UTF-8 and, when `output` is given, writes the
-result to that file. See `src/cli.js`.
+The CLI reads the input file as UTF-8 (or as binary when the input is a `.docx`)
+and, when `output` is given, writes the result to that file. Binary PDF results
+are written as bytes, never JSON-serialised. See `src/cli.js`.
 
 ## Environment Variables
 
-None. The package is a CLI + library, not a server; there is no `PORT` or HTTP
-endpoint, and `docker run -p 3000:3000` is not applicable.
+| Variable     | Purpose                                   |
+| ------------ | ----------------------------------------- |
+| `CHROME_PATH`| Path to a Chrome/Chromium binary for PDF  |
 
 ## Docker
 
@@ -92,4 +115,5 @@ docker run doc-converter --help
 docker run doc-converter -v "$PWD":/app/documents --help
 ```
 
-The image runs the `doc-convert` CLI (see `Dockerfile`). It does not serve HTTP.
+The image runs the `doc-convert` CLI (see `Dockerfile`) and ships a Chromium
+binary so PDF conversion works in the container. It does not serve HTTP.

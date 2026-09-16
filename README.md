@@ -1,14 +1,16 @@
 # DocConverter
 
-A small Node.js document format converter. Today it converts **Markdown to HTML**
-with a CLI and a programmatic API. PDF and DOCX support are planned but not yet
-implemented.
+A small Node.js document format converter for DevOps workflows. Converts
+**Markdown → HTML**, **Markdown → PDF**, **HTML → PDF**, and **DOCX →
+Markdown** via a CLI and a programmatic API.
 
 ## Features
 
 - CLI tool: `doc-convert <input> [output] [--format html|pdf|md]`
 - Programmatic API: `DocumentConverter` class
 - Markdown → HTML conversion (headers, bold, italic, code, links, images, lists)
+- Markdown → PDF and HTML → PDF via Puppeteer (system Chrome/Chromium)
+- DOCX → Markdown via mammoth
 - Docker image that runs the CLI
 - CI pipeline with lint, tests, and a security audit
 
@@ -16,8 +18,6 @@ implemented.
 
 - Batch conversion of multiple files
 - Formatting/style preservation
-- PDF generation (stub in `src/converters/html-pdf.js`)
-- DOCX conversion (stub in `src/converters/docx.js`)
 
 ## Installation
 
@@ -26,14 +26,23 @@ npm install
 npm link
 ```
 
+PDF conversion requires a Chrome/Chromium binary. It is located
+automatically on common paths, or pointed at explicitly with `CHROME_PATH`.
+
 ## Usage
 
 ```bash
 # Convert a Markdown file to HTML
 doc-convert input.md output.html
 
-# Convert to PDF (currently returns a placeholder object)
-doc-convert input.md --format pdf
+# Convert a Markdown file to PDF
+doc-convert input.md output.pdf
+
+# Convert an HTML file to PDF
+doc-convert index.html output.pdf
+
+# Convert a DOCX file to Markdown
+doc-convert document.docx output.md
 
 # Show help/version
 doc-convert --help
@@ -47,13 +56,15 @@ import { DocumentConverter } from 'doc-converter';
 
 const converter = new DocumentConverter();
 const html = await converter.convert('# Hello', 'html');
+const pdf = await converter.convert('# Hello', 'pdf'); // Buffer
+const md = await converter.convert(docxBuffer, 'markdown');
 ```
 
 ## Development
 
 ```bash
 npm install
-npm test       # run unit tests (vitest)
+npm test       # run unit + integration tests (vitest)
 npm run lint   # run eslint
 ```
 
