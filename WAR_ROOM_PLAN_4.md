@@ -1,5 +1,0 @@
-- [x] Add `--batch <dir> --output-dir <out>` conversion
-- [x] Support `-` (stdin) and `-o -` (stdout)
-- [x] Refuse to overwrite an existing output file unless `-f/--force` is passed
-- [x] Use async fs (`fs/promises`)
-- [x] Add CLI tests for batch success, partial-failure exit codes, stdin/stdout, and no-overwrite guard
