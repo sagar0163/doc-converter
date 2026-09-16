@@ -41,3 +41,40 @@ describe('Markdown Converter', () => {
     expect(html).toContain('<li>Item 1</li>');
   });
 });
+
+describe('Markdown Security', () => {
+  it('should escape raw HTML', () => {
+    const md = '<script>alert(1)</script>';
+    const html = convertMarkdownToHtml(md);
+    expect(html).not.toContain('<script>');
+    expect(html).toContain('&lt;script&gt;');
+  });
+
+  it('should filter javascript: URLs in links', () => {
+    const md = '[click](javascript:alert(1))';
+    const html = convertMarkdownToHtml(md);
+    expect(html).not.toContain('javascript:alert');
+    expect(html).toContain('href="about:blank"');
+  });
+
+  it('should filter javascript: URLs with spaces', () => {
+    const md = '[click](  javascript:alert(1) )';
+    const html = convertMarkdownToHtml(md);
+    expect(html).not.toContain('javascript:alert');
+    expect(html).toContain('href="about:blank"');
+  });
+
+  it('should escape text nodes like < and &', () => {
+    const md = '1 < 2 & 3 > 1';
+    const html = convertMarkdownToHtml(md);
+    expect(html).not.toContain('< 2');
+    expect(html).toContain('1 &lt; 2 &amp; 3 &gt; 1');
+  });
+
+  it('should filter data: URLs in images', () => {
+    const md = '![img](data:image/svg+xml;base64,PHN2Zw)';
+    const html = convertMarkdownToHtml(md);
+    expect(html).not.toContain('data:image');
+    expect(html).toContain('src="about:blank"');
+  });
+});

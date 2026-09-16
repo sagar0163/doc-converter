@@ -1,0 +1,5 @@
+- [x] Update `src/converters/markdown.js` to HTML-escape text nodes (`<`, `>`, `&`, quotes).
+- [x] Update link/image generation in `src/converters/markdown.js` to filter risky URL schemes (`javascript:`, `data:`, `vbscript:`).
+- [ ] Update `src/index.js` passthrough paths (`toHtml`, `toMarkdown`) to throw errors instead of returning input.
+- [x] Add tests in `test/unit/markdown.test.js` for raw HTML escaping, risky URL filtering, and text node escaping.
+- [ ] Add tests in `test/unit/index.test.js` (or similar) to ensure passthrough paths throw.
