@@ -1,5 +1,0 @@
-- [x] Fix existing broken test imports out of the box (html-pdf.test.js)
-- [x] Add regression tests covering: images, fenced code blocks containing header/bold markers, nested emphasis, inline escaping (\*), ampersands/less-than in text, $$, empty input, and malformed links.
-- [ ] Install markdown-it package
-- [ ] Replace `convertMarkdownToHtml` in `src/converters/markdown.js` to use `markdown-it`
-- [ ] Ensure `npm test` and `npm run lint` are green
