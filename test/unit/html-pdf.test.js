@@ -1,37 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { convertHtml } from '../src/converters/html.js';
-import { convertPdf } from '../src/converters/pdf.js';
+import { convertHtmlToPdf } from '../../src/converters/html-pdf.js';
 
-describe('HTML Converter', () => {
-  it('should convert HTML to Markdown', () => {
-    const html = '<h1>Title</h1><p>Paragraph</p>';
-    const result = convertHtml(html);
-    expect(result).toContain('Title');
-    expect(result).toContain('Paragraph');
+describe('HTML to PDF Converter', () => {
+  it('should return pdf metadata for given html', async () => {
+    const result = await convertHtmlToPdf('<h1>Title</h1>');
+    expect(result.message).toContain('PDF conversion');
+    expect(result.html).toBe('<h1>Title</h1>');
   });
 
-  it('should handle inline styles', () => {
-    const html = '<p style="color:red">Red text</p>';
-    const result = convertHtml(html);
-    expect(result).toBeDefined();
+  it('should apply default pdf options', async () => {
+    const result = await convertHtmlToPdf('<p>text</p>');
+    expect(result.options).toEqual({ format: 'A4', margin: '1cm', landscape: false });
   });
 
-  it('should handle nested elements', () => {
-    const html = '<div><ul><li>Item 1</li><li>Item 2</li></ul></div>';
-    const result = convertHtml(html);
-    expect(result).toContain('Item 1');
-    expect(result).toContain('Item 2');
-  });
-});
-
-describe('PDF Converter', () => {
-  it('should handle basic PDF conversion', () => {
-    // Mock test
-    expect(true).toBe(true);
-  });
-
-  it('should handle PDF with images', () => {
-    // Mock test
-    expect(true).toBe(true);
+  it('should honor custom pdf options', async () => {
+    const result = await convertHtmlToPdf('<p>text</p>', {
+      format: 'Letter',
+      margin: '2cm',
+      landscape: true,
+    });
+    expect(result.options).toEqual({ format: 'Letter', margin: '2cm', landscape: true });
   });
 });
