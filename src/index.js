@@ -12,7 +12,7 @@ export class DocumentConverter {
     
     switch (outputFormat) {
       case 'html':
-        return this.toHtml(input, inputFormat, options);
+        return this.toHtml(input, inputFormat);
       case 'pdf':
         return this.toPdf(input, inputFormat, options);
       case 'markdown':
@@ -30,17 +30,17 @@ export class DocumentConverter {
     return 'text';
   }
 
-  async toHtml(input, format, options) {
+  async toHtml(input, format) {
     switch (format) {
       case 'markdown':
-        return convertMarkdownToHtml(input, options);
+        return convertMarkdownToHtml(input);
       default:
         return input;
     }
   }
 
   async toPdf(input, format, options) {
-    const html = await this.toHtml(input, format, options);
+    const html = await this.toHtml(input, format);
     return convertHtmlToPdf(html, options);
   }
 
