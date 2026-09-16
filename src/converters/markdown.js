@@ -2,7 +2,7 @@
  * Markdown to HTML converter
  */
 
-export function convertMarkdownToHtml(markdown, options = {}) {
+export function convertMarkdownToHtml(markdown, _options = {}) {
   let html = markdown;
   
   // Convert headers
@@ -29,7 +29,7 @@ export function convertMarkdownToHtml(markdown, options = {}) {
   html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
   
   // Convert lists
-  html = html.replace(/^\- (.*$)/gm, '<li>$1</li>');
+  html = html.replace(/^- (.*$)/gm, '<li>$1</li>');
   html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
   
   // Convert paragraphs

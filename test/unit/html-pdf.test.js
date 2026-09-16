@@ -1,37 +1,29 @@
 import { describe, it, expect } from 'vitest';
-import { convertHtml } from '../src/converters/html.js';
-import { convertPdf } from '../src/converters/pdf.js';
+import { convertHtmlToPdf } from '../../src/converters/html-pdf.js';
 
-describe('HTML Converter', () => {
-  it('should convert HTML to Markdown', () => {
-    const html = '<h1>Title</h1><p>Paragraph</p>';
-    const result = convertHtml(html);
-    expect(result).toContain('Title');
-    expect(result).toContain('Paragraph');
+describe('HTML to PDF Converter', () => {
+  it('is a placeholder that reports PDF conversion requires puppeteer', async () => {
+    const result = await convertHtmlToPdf('<h1>Hello</h1>');
+    expect(result.message).toContain('PDF conversion requires puppeteer');
   });
 
-  it('should handle inline styles', () => {
-    const html = '<p style="color:red">Red text</p>';
-    const result = convertHtml(html);
-    expect(result).toBeDefined();
+  it('passes the html through in the result', async () => {
+    const html = '<h1>Hello</h1>';
+    const result = await convertHtmlToPdf(html);
+    expect(result.html).toBe(html);
   });
 
-  it('should handle nested elements', () => {
-    const html = '<div><ul><li>Item 1</li><li>Item 2</li></ul></div>';
-    const result = convertHtml(html);
-    expect(result).toContain('Item 1');
-    expect(result).toContain('Item 2');
-  });
-});
-
-describe('PDF Converter', () => {
-  it('should handle basic PDF conversion', () => {
-    // Mock test
-    expect(true).toBe(true);
+  it('applies default options', async () => {
+    const result = await convertHtmlToPdf('<h1>Hello</h1>');
+    expect(result.options).toEqual({ format: 'A4', margin: '1cm', landscape: false });
   });
 
-  it('should handle PDF with images', () => {
-    // Mock test
-    expect(true).toBe(true);
+  it('honours provided options', async () => {
+    const result = await convertHtmlToPdf('<h1>Hello</h1>', {
+      format: 'Letter',
+      margin: '2cm',
+      landscape: true,
+    });
+    expect(result.options).toEqual({ format: 'Letter', margin: '2cm', landscape: true });
   });
 });

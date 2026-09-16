@@ -7,3 +7,10 @@ coverage/
 .DS_Store
 *.swp
 *.swo
+
+# Stray scratch files in the repo root
+/*.txt
+/*.tmp
+/*.bak
+/scratch/
+/docs.txt
