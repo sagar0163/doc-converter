@@ -15,11 +15,11 @@ We will respond within 24 hours.
 
 ## Security Checks
 
-This project includes security scanning in CI (see `.github/workflows/ci.yml`):
+This project runs supply-chain security scans on every build — both in CI (see `.github/workflows/ci.yml`) and as a dedicated audit stage in the Dockerfile. Both run `npm audit` against the full dependency tree and fail the build if any high-severity vulnerability is found:
 
 ```bash
-# Run security audit (production dependencies)
-npm audit --omit=dev --audit-level=high
+# Run security audit (full dependency tree, fails on high-severity findings)
+npm audit --audit-level=high
 ```
 
 ## Best Practices
