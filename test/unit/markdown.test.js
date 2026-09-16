@@ -45,7 +45,7 @@ describe('Markdown Converter', () => {
     const md = '![alt text](https://example.com/image.png)';
     const html = convertMarkdownToHtml(md);
     expect(html).not.toContain('!<a href');
-    expect(html).toContain('<img alt="alt text" src="https://example.com/image.png"');
+    expect(html).toContain('<img src="https://example.com/image.png" alt="alt text"');
   });
 
   it('should emit fenced code block contents verbatim', () => {
