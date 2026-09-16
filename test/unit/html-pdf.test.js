@@ -1,29 +1,36 @@
 import { describe, it, expect } from 'vitest';
-import { convertHtmlToPdf } from '../../src/converters/html-pdf.js';
+import { convertHtmlToPdf, resolveChromeExecutable } from '../../src/converters/html-pdf.js';
+
+describe('resolveChromeExecutable', () => {
+  it('returns a non-empty string or undefined when no chrome found', () => {
+    const result = resolveChromeExecutable();
+    expect(result === undefined || typeof result === 'string').toBe(true);
+  });
+});
 
 describe('HTML to PDF Converter', () => {
-  it('is a placeholder that reports PDF conversion requires puppeteer', async () => {
-    const result = await convertHtmlToPdf('<h1>Hello</h1>');
-    expect(result.message).toContain('PDF conversion requires puppeteer');
+  it('produces a real PDF buffer starting with %PDF', async () => {
+    const pdf = await convertHtmlToPdf('<h1>Hello</h1><p>World</p>');
+    expect(Buffer.isBuffer(pdf)).toBe(true);
+    expect(pdf.length).toBeGreaterThan(0);
+    expect(pdf.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
 
-  it('passes the html through in the result', async () => {
-    const html = '<h1>Hello</h1>';
-    const result = await convertHtmlToPdf(html);
-    expect(result.html).toBe(html);
-  });
-
-  it('applies default options', async () => {
-    const result = await convertHtmlToPdf('<h1>Hello</h1>');
-    expect(result.options).toEqual({ format: 'A4', margin: '1cm', landscape: false });
-  });
-
-  it('honours provided options', async () => {
-    const result = await convertHtmlToPdf('<h1>Hello</h1>', {
+  it('honours format, margin and landscape options without error', async () => {
+    const pdf = await convertHtmlToPdf('<h1>Test</h1>', {
       format: 'Letter',
       margin: '2cm',
       landscape: true,
     });
-    expect(result.options).toEqual({ format: 'Letter', margin: '2cm', landscape: true });
+    expect(Buffer.isBuffer(pdf)).toBe(true);
+    expect(pdf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
+
+  it('honours a margin object {top,right,bottom,left}', async () => {
+    const pdf = await convertHtmlToPdf('<h1>Margin</h1>', {
+      margin: { top: '1in', right: '0.5in', bottom: '1in', left: '0.5in' },
+    });
+    expect(Buffer.isBuffer(pdf)).toBe(true);
+    expect(pdf.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
 });
