@@ -77,7 +77,7 @@ export async function convertHtmlToPdf(html, options = {}) {
     }
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { waitUntil: 'load' });
 
     const pdfOptions = {
       printBackground: true,
