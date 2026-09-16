@@ -1,6 +1,7 @@
 import { convertMarkdownToHtml } from './converters/markdown.js';
 import { convertHtmlToPdf } from './converters/html-pdf.js';
 import { convertDocxToMarkdown } from './converters/docx.js';
+import { escapeHtml } from './sanitize.js';
 
 export class DocumentConverter {
   constructor(options = {}) {
@@ -38,8 +39,9 @@ export class DocumentConverter {
       case 'markdown':
         return convertMarkdownToHtml(input);
       case 'html':
-      case 'text':
         return input;
+      case 'text':
+        return escapeHtml(input);
       default:
         throw new Error(`Unsupported conversion: ${format} -> html`);
     }

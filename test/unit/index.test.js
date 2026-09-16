@@ -21,6 +21,23 @@ describe('DocumentConverter', () => {
     expect(html).toContain('<h1>Hello</h1>');
   });
 
+  it('sanitizes markdown raw HTML and javascript: URLs by default', async () => {
+    const html = await converter.convert(
+      '# Title\n\n<script>alert(1)</script>\n\n[x](javascript:alert(1))',
+      'html',
+    );
+    expect(html).not.toContain('<script>');
+    expect(html).not.toContain('javascript:');
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+  });
+
+  it('escapes text nodes when converting plain text to html', async () => {
+    const html = await converter.convert('Plain 1 < 2 and A & B', 'html');
+    expect(html).not.toContain('1 < 2');
+    expect(html).toContain('1 &lt; 2');
+    expect(html).toContain('A &amp; B');
+  });
+
   it('converts markdown to a real PDF buffer', async () => {
     const pdf = await converter.convert('# Hello\n\nWorld', 'pdf');
     expect(Buffer.isBuffer(pdf)).toBe(true);
