@@ -78,3 +78,10 @@ describe('Markdown Security', () => {
     expect(html).toContain('src="about:blank"');
   });
 });
+
+  it('should prevent img-onerror injection via alt attribute', () => {
+    const md = '![img" onerror="alert(1)"](http://example.com)';
+    const html = convertMarkdownToHtml(md);
+    expect(html).toContain('alt="img&quot; onerror=&quot;alert(1)&quot;"');
+    expect(html).toContain('&quot;');
+  });
