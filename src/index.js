@@ -35,7 +35,7 @@ export class DocumentConverter {
       case 'markdown':
         return convertMarkdownToHtml(input, options);
       default:
-        return input;
+        throw new Error(`Passthrough of untrusted input format ${format} to HTML is not allowed for security reasons`);
     }
   }
 
@@ -49,7 +49,7 @@ export class DocumentConverter {
       case 'docx':
         return convertDocxToMarkdown(input, options);
       default:
-        return input;
+        throw new Error(`Passthrough of untrusted input format ${format} to Markdown is not allowed for security reasons`);
     }
   }
 }
