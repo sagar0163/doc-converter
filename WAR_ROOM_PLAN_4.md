@@ -1,5 +1,0 @@
-- [ ] Refactor `src/cli.js` to use `fs.promises`.
-- [ ] Add stdin (`-`) and stdout (`-o -` or `-`) support.
-- [ ] Add batch conversion support (`--batch <dir> --output-dir <out>`).
-- [ ] Add non-clobbering file writes with `--force` flag.
-- [ ] Add tests for the CLI functionality.
