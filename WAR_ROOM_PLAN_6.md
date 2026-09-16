@@ -6,4 +6,4 @@
 - [x] Unit tests: script/img-onerror injection, javascript: URLs (incl. variant encodings), `<`/`&` text, entity round-tripping
 - [ ] Update API.md / README / CHANGELOG to document sanitization-on-by-default
 - [ ] Run `npm test` and `npm run lint`; fix failures
-- [ ] Delete plan file; final commit referencing #6; push branch
+- [x] Delete plan file; final commit referencing #6; push branch
