@@ -11,6 +11,8 @@ Markdown** via a CLI and a programmatic API.
 - Markdown → HTML conversion (headers, bold, italic, code, links, images, lists)
 - Markdown → PDF and HTML → PDF via Puppeteer (system Chrome/Chromium)
 - DOCX → Markdown via mammoth
+- Output sanitization on by default: raw HTML is escaped, text nodes are
+  entity-escaped, and `javascript:`/`data:`/`vbscript:` links are blocked
 - Docker image that runs the CLI
 - CI pipeline with lint, tests, and a security audit
 

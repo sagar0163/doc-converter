@@ -51,8 +51,26 @@ Detects a format from content: `'markdown'`, `'html'`, `'text'`, `'docx'`
 
 ### `toHtml(input, format, options?)`
 
-Converts Markdown input to HTML (delegates to `convertMarkdownToHtml`). HTML and
-text input are passed through unchanged. Anything else throws.
+Converts Markdown input to HTML (delegates to `convertMarkdownToHtml`). Text
+input is entity-escaped into well-formed HTML. HTML input is passed through
+unchanged — treat it as already-trusted HTML. Anything else throws.
+
+### Output sanitization
+
+Markdown and text input are treated as untrusted. Sanitization is always on
+and cannot be disabled:
+
+- Raw HTML (e.g. `<script>`) is entity-escaped and rendered as visible text.
+- Text nodes are entity-escaped (`<`, `>`, `&`, quotes), so output is always
+  well-formed HTML.
+- Link/image destinations using `javascript:`, `data:`, or `vbscript:`
+  schemes are replaced with a safe `#` placeholder. Obfuscated variants
+  (embedded whitespace/control characters, numeric or named character
+  references such as `jav&#x61;script:` or `javascript&colon;`) are blocked
+  too.
+
+For HTML → HTML / HTML → PDF input, the input is passed through as-is and
+should only be supplied from trusted sources.
 
 ### `toPdf(input, format, options?)`
 

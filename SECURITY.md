@@ -27,5 +27,7 @@ npm audit --audit-level=high
 1. Keep dependencies updated
 2. Validate all user input
 3. Sanitize file uploads
-4. Use secure headers (when an HTTP service is ever added)
-5. Implement rate limiting (when an HTTP service is ever added)
+4. Markdown-to-HTML output is sanitized by default (raw HTML escaped, text
+   nodes entity-escaped, `javascript:`/`data:`/`vbscript:` links blocked)
+5. Use secure headers (when an HTTP service is ever added)
+6. Implement rate limiting (when an HTTP service is ever added)

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+- Markdown → HTML output is now sanitized by default: raw HTML is escaped into
+  entities, text nodes are entity-escaped, and `javascript:`/`data:`/`vbscript:`
+  link and image destinations (including obfuscated variants) are replaced with
+  a safe `#`. Plain-text → HTML output is entity-escaped too.
 - Implemented real PDF conversion (Markdown → PDF, HTML → PDF) using
   `puppeteer-core` with a system Chrome/Chromium binary
 - Implemented real DOCX → Markdown conversion using `mammoth`
