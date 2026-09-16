@@ -26,6 +26,7 @@
   "author": "Sagar Jadhav",
   "license": "MIT",
   "devDependencies": {
-    "release-it": "^19.2.4"
+    "release-it": "^19.2.4",
+    "vitest": "^5.0.1"
   }
 }
