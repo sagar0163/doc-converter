@@ -33,20 +33,29 @@ export class DocumentConverter {
     return 'text';
   }
 
-  async toHtml(input, format) {
+  async toHtml(input, format, options = {}) {
     switch (format) {
       case 'markdown':
         return convertMarkdownToHtml(input);
-      case 'html':
       case 'text':
-        return input;
+        return input
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      case 'html':
+        if (options.isInternalPdfRender) {
+          return input;
+        }
+        throw new Error('Raw HTML passthrough is blocked for security reasons');
       default:
         throw new Error(`Unsupported conversion: ${format} -> html`);
     }
   }
 
   async toPdf(input, format, options) {
-    const html = await this.toHtml(input, format);
+    const html = await this.toHtml(input, format, { isInternalPdfRender: true });
     return convertHtmlToPdf(html, options);
   }
 
