@@ -1,5 +1,0 @@
-- [ ] Configure `markdown-it` to `html: false` by default so raw HTML is escaped.
-- [ ] Add explicit URL scheme validation to `markdown-it` to block `javascript:`, `data:`, `vbscript:`.
-- [ ] Fix `src/index.js` silent passthrough branches to escape input or throw.
-- [ ] Write unit tests for sanitization cases.
-- [ ] Run test and fix issues.
