@@ -94,3 +94,39 @@ describe('Markdown Converter', () => {
     expect(html).toContain('[broken link(http://example.com)');
   });
 });
+
+describe('Markdown Converter Security', () => {
+  it('should escape raw HTML tags', () => {
+    const html = convertMarkdownToHtml('<script>alert(1)</script>');
+    expect(html).not.toContain('<script>');
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+  });
+
+  it('should block javascript: URLs in links', () => {
+    const html = convertMarkdownToHtml('[x](javascript:alert(1))');
+    expect(html).not.toContain('href="javascript:');
+    // It should render as plain text or an empty link
+    expect(html).toContain('javascript:alert(1)');
+  });
+
+  it('should block vbscript: URLs in links', () => {
+    const html = convertMarkdownToHtml('[x](VBScript:msgbox(1))');
+    expect(html).not.toContain('href="VBScript:');
+  });
+
+  it('should block data: URLs in images', () => {
+    const html = convertMarkdownToHtml('![x](data:image/svg+xml;base64,PHN2Z)');
+    expect(html).not.toContain('src="data:');
+  });
+
+  it('should escape HTML in img onerror injection', () => {
+    const html = convertMarkdownToHtml('<img src=x onerror=alert(1)>');
+    expect(html).not.toContain('<img');
+    expect(html).toContain('&lt;img src=x onerror=alert(1)&gt;');
+  });
+
+  it('should properly entity-escape text nodes', () => {
+    const html = convertMarkdownToHtml('1 < 2 & "3"');
+    expect(html).toContain('1 &lt; 2 &amp; &quot;3&quot;');
+  });
+});

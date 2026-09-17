@@ -57,3 +57,20 @@ describe('DocumentConverter', () => {
     );
   });
 });
+describe('DocumentConverter Security', () => {
+  const converter = new DocumentConverter();
+
+  it('throws an explicit error when attempting to passthrough HTML directly', async () => {
+    await expect(converter.convert('<h1>Raw HTML</h1><script>alert(1)</script>', 'html')).rejects.toThrow(
+      'Raw HTML passthrough is blocked for security reasons'
+    );
+  });
+
+  it('escapes entities when passthrough plain text to HTML', async () => {
+    // Does not start with '#' or '<', so it's 'text'
+    const input = '1 < 2 & "3" \'4\'';
+    const html = await converter.convert(input, 'html');
+    expect(html).toContain('1 &lt; 2 &amp; &quot;3&quot; &#39;4&#39;');
+    expect(html).not.toContain('<');
+  });
+});
