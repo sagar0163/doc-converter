@@ -24,9 +24,21 @@ jobs:
         
       - name: Run linter
         run: npm run lint
-        
+
       - name: Run tests
         run: npm test
+
+      - name: Run security audit
+        run: npm audit --audit-level=high
+
+      - name: Check for scratch files in repo root
+        run: |
+          scratch_files=$(find . -maxdepth 1 -type f \( -name '*.txt' -o -name '*.tmp' -o -name '*.bak' \) | sort)
+          if [ -n "$scratch_files" ]; then
+            echo "::error::Scratch files found in repo root:"
+            echo "$scratch_files"
+            exit 1
+          fi
         
   docker:
     runs-on: ubuntu-latest

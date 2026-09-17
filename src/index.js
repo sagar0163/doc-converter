@@ -9,10 +9,10 @@ export class DocumentConverter {
 
   async convert(input, outputFormat, options = {}) {
     const inputFormat = this.detectFormat(input);
-    
+
     switch (outputFormat) {
       case 'html':
-        return this.toHtml(input, inputFormat, options);
+        return this.toHtml(input, inputFormat);
       case 'pdf':
         return this.toPdf(input, inputFormat, options);
       case 'markdown':
@@ -24,23 +24,29 @@ export class DocumentConverter {
   }
 
   detectFormat(input) {
-    if (typeof input !== 'string') return 'binary';
+    if (typeof input !== 'string') {
+      if (isDocxBuffer(input)) return 'docx';
+      return 'binary';
+    }
     if (input.trim().startsWith('#') || input.includes('```')) return 'markdown';
     if (input.trim().startsWith('<')) return 'html';
     return 'text';
   }
 
-  async toHtml(input, format, options) {
+  async toHtml(input, format) {
     switch (format) {
       case 'markdown':
-        return convertMarkdownToHtml(input, options);
-      default:
+        return convertMarkdownToHtml(input);
+      case 'html':
+      case 'text':
         return input;
+      default:
+        throw new Error(`Unsupported conversion: ${format} -> html`);
     }
   }
 
   async toPdf(input, format, options) {
-    const html = await this.toHtml(input, format, options);
+    const html = await this.toHtml(input, format);
     return convertHtmlToPdf(html, options);
   }
 
@@ -48,10 +54,20 @@ export class DocumentConverter {
     switch (format) {
       case 'docx':
         return convertDocxToMarkdown(input, options);
-      default:
+      case 'markdown':
+      case 'md':
         return input;
+      default:
+        throw new Error(`Unsupported conversion: ${format} -> markdown`);
     }
   }
+}
+
+function isDocxBuffer(input) {
+  if (Buffer.isBuffer(input)) {
+    return input.length > 4 && input.readUInt32LE(0) === 0x0403_4b50;
+  }
+  return false;
 }
 
 export default DocumentConverter;
